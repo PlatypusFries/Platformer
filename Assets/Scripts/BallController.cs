@@ -17,7 +17,6 @@ public class BallController : MonoBehaviour {
 		if (Input.GetButton ("Jump") && isGrounded)
 		{
 			force.y = jumpSpeed * Time.deltaTime;
-			isGrounded = false;
 		}
 
 		rigidbody.AddForce( force );
@@ -37,6 +36,16 @@ public class BallController : MonoBehaviour {
 		if (collision.collider.CompareTag("Ground"))
 		{
 			isGrounded = true;
+			this.gameObject.transform.parent = collision.gameObject.transform;
+		}
+	}
+
+	void OnCollisionExit(Collision collision)
+	{
+		if (collision.collider.CompareTag("Ground"))
+		{
+			isGrounded = false;
+			this.gameObject.transform.parent = null;
 		}
 	}
 }
