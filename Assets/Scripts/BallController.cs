@@ -14,7 +14,7 @@ public class BallController : MonoBehaviour {
 
 		Vector3 force = new Vector3( x, 0f, z );
 
-		if (Input.GetButton ("Jump") && isGrounded)
+		if (Input.GetButtonDown ("Jump") && isGrounded)
 		{
 			force.y = jumpSpeed * Time.deltaTime;
 		}
@@ -31,21 +31,35 @@ public class BallController : MonoBehaviour {
 		}
 	}
 
-	void OnCollisionEnter(Collision collision)
+	void OnCollisionStay(Collision collision)
 	{
-		if (collision.collider.CompareTag("Ground"))
-		{
-			isGrounded = true;
-			this.gameObject.transform.parent = collision.gameObject.transform;
-		}
+        if (collision.contacts.Length > 0)
+        {
+            ContactPoint contact = collision.contacts[0];
+            if (Vector3.Dot(contact.normal, Vector3.up) > 0.5)
+            {
+                if (collision.collider.CompareTag("Ground") && this.collider)
+                {
+                    isGrounded = true;
+                    this.gameObject.transform.parent = collision.gameObject.transform;
+                }
+            }
+        }
 	}
 
 	void OnCollisionExit(Collision collision)
 	{
-		if (collision.collider.CompareTag("Ground"))
-		{
-			isGrounded = false;
-			this.gameObject.transform.parent = null;
-		}
+        if (collision.contacts.Length > 0)
+        {
+            ContactPoint contact = collision.contacts[0];
+            if (Vector3.Dot(contact.normal, Vector3.up) > 0.5)
+            {
+                if (collision.collider.CompareTag("Ground"))
+                {
+                    isGrounded = false;
+                    this.gameObject.transform.parent = null;
+                }
+            }
+        }
 	}
 }
