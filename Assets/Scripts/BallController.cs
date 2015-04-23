@@ -6,6 +6,8 @@ public class BallController : MonoBehaviour {
 	public float moveSpeed;
 	public float jumpSpeed;
 	bool isGrounded = true;
+	Vector3 spawnPoint;
+	public float killZ;
 
 	void Update ()
 	{
@@ -16,18 +18,30 @@ public class BallController : MonoBehaviour {
 
 		if (Input.GetButtonDown ("Jump") && isGrounded)
 		{
-			force.y = jumpSpeed * Time.deltaTime;
+			force.y = jumpSpeed;
 		}
 
 		rigidbody.AddForce( force );
+
+		if (transform.position.y < killZ)
+		{
+			transform.position = spawnPoint;
+			rigidbody.velocity = Vector3.zero;
+			rigidbody.angularVelocity = Vector3.zero;
+		}
 	}
 
-	void OnTriggerEnter(Collider other)
+	void OnTriggerEnter(Collider trigger)
 	{
-		if (other.CompareTag("Coin"))
+		if (trigger.CompareTag("Coin"))
 		{
-			other.gameObject.SetActive(false);
+			trigger.gameObject.SetActive(false);
 			ScoreTracker.instance.AddScore(10);
+		}
+		if (trigger.CompareTag("Checkpoint"))
+		{
+			spawnPoint = trigger.transform.position;
+			trigger.gameObject.SetActive(false);
 		}
 	}
 
@@ -49,17 +63,14 @@ public class BallController : MonoBehaviour {
 
 	void OnCollisionExit(Collision collision)
 	{
-        if (collision.contacts.Length > 0)
+    	if (collision.contacts.Length > 0)
         {
-            ContactPoint contact = collision.contacts[0];
-            if (Vector3.Dot(contact.normal, Vector3.up) > 0.5)
+        	if (collision.collider.CompareTag("Ground"))
             {
-                if (collision.collider.CompareTag("Ground"))
-                {
-                    isGrounded = false;
-                    this.gameObject.transform.parent = null;
-                }
+            	isGrounded = false;
+                this.gameObject.transform.parent = null;
             }
+            
         }
 	}
 }
