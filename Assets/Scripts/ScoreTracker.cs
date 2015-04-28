@@ -8,6 +8,7 @@ public class ScoreTracker : MonoBehaviour {
 
 	Text scoreText;
 	int score = 0;
+    int lifeBoost = 0;
 
 	void Awake()
 	{
@@ -20,6 +21,12 @@ public class ScoreTracker : MonoBehaviour {
 	public void AddScore(int value)
 	{
 		score += value;
+        lifeBoost += value;
 		scoreText.text = "Score: " + score.ToString();
+        if ( lifeBoost >= 100 )
+        {
+            lifeBoost -= 100;
+            LifeTracker.instance.AddLife();
+        }
 	}
 }
