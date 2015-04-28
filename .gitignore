@@ -1,5 +1,11 @@
+<<<<<<< HEAD
 /Temp
 /Library
+=======
+Temp/
+Library/
+ProjectSettings/
+>>>>>>> 72f43b229b3f80fa91a6a2ebf1d9aa227c96673d
 #################
 ## Eclipse
 #################
