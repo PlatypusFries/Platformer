@@ -53,13 +53,18 @@ public class BallController : MonoBehaviour {
             ContactPoint contact = collision.contacts[0];
             if (Vector3.Dot(contact.normal, Vector3.up) > 0.5)
             {
-                if (collision.collider.CompareTag("Ground") && this.collider)
+				if ( ( collision.collider.CompareTag("Ground") || collision.collider.CompareTag("Victory") ) && this.collider)
                 {
                     isGrounded = true;
                     this.gameObject.transform.parent = collision.gameObject.transform;
                 }
             }
         }
+
+		if ( collision.collider.CompareTag("Victory") )
+		{
+			VictoryText.instance.Win();
+		}
 	}
 
 	void OnCollisionExit(Collision collision)
